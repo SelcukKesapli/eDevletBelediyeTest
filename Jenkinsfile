@@ -33,16 +33,16 @@ pipeline {
           args += "-Dheadless=${params.HEADLESS}"
 
           if (isUnix()) {
-            sh "mvn -U -B clean test ${args.join(' ')}"
+            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           } else {
-            bat "mvn -U -B clean test ${args.join(' ')}"
+            bat "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           }
         }
       }
       post {
         always {
-          // Surefire + Failsafe + Cucumber (sen Runner'da xml-report kullanıyorsun)
-          junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml, **/target/xml-report/*.xml, **/target/cucumber-reports/*.xml'
+          // Surefire + Runner junit raporları
+          junit testResults: 'target/surefire-reports/*.xml, target/xml-report/*.xml', allowEmptyResults: false
         }
       }
     }
@@ -50,7 +50,7 @@ pipeline {
     stage('Allure Report') {
       steps {
         script {
-          // workspace altında tüm allure-results klasörlerini tara
+          // workspace altında tüm allure-results klasörlerini bul
           def hits = findFiles(glob: '**/target/allure-results')
           if (hits && hits.size() > 0) {
             def inputs = hits.collect { [path: it.path] }
@@ -64,7 +64,7 @@ pipeline {
 
     stage('Archive Artifacts') {
       steps {
-        archiveArtifacts artifacts: '**/target/**/*.jar, **/target/**/*.zip, logs/**/*, **/target/screenshots/**/*, **/target/*.log', fingerprint: true, onlyIfSuccessful: false
+        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log', fingerprint: true, onlyIfSuccessful: false
       }
     }
   }

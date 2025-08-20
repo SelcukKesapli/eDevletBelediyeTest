@@ -12,87 +12,39 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Versiyonlar -->
+        <!-- İstersen 4.35.0+ yaparak CDP uyarısını da azaltırsın -->
         <selenium.version>4.34.0</selenium.version>
         <cucumber.version>7.27.0</cucumber.version>
-        <junit.jupiter.version>5.10.2</junit.jupiter.version>
-        <junit.platform.version>1.10.2</junit.platform.version>
-        <surefire.version>3.2.5</surefire.version>
+        <surefire.version>3.5.3</surefire.version>
     </properties>
-
-    <!-- JUnit sürümlerini BOM ile hizala -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.13.4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.34.0</version>
+            <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- Cucumber -->
+        <!-- Cucumber (JUnit4 Runner ile) -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.27.0</version>
+            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit-platform-engine</artifactId>
-            <version>7.27.0</version>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
 
-        <!-- JUnit 5 (BOM sayesinde alt modüller hizalanır) -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- JUnit Platform Suite anotasyonları -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite</artifactId>
-            <version>1.13.4</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- IDE/maven uyumu için launcher’ı da sabitle -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.13.4</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Opsiyonel: WebDriverManager (istersen bırak) -->
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>6.2.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.13.4</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- JUnit4 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -100,39 +52,41 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>7.27.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-cucumber7-jvm -->
+        <!-- Allure (Cucumber7 entegrasyonu) -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-cucumber7-jvm</artifactId>
             <version>2.29.0</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <!-- Log4j -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.25.1</version>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>2.25.1</version>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
             <version>2.25.1</version>
+            <scope>test</scope>
         </dependency>
 
+        <!-- Opsiyonel: WebDriverManager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>6.2.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -140,17 +94,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>${surefire.version}</version>
                 <configuration>
-                    <!-- Runner’ını çalıştır -->
+                    <useModulePath>false</useModulePath>
                     <includes>
                         <include>**/*Runner*.java</include>
                         <include>**/*Test*.java</include>
                     </includes>
-                    <useModulePath>false</useModulePath>
+                    <!-- Türkçe karakterler için -->
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <!-- Jenkins parametrelerini Maven'a geçireceksen:
+                    <systemPropertyVariables>
+                      <browser>${browser}</browser>
+                      <headless>${headless}</headless>
+                    </systemPropertyVariables>
+                    -->
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
