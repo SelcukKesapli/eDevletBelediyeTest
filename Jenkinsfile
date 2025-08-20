@@ -5,8 +5,8 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '20'))
   }
   tools {
-    jdk 'JDK17'       // Manage Jenkins > Tools'ta verdiğin ad
-    maven 'Maven 3'   // Manage Jenkins > Tools'ta verdiğin ad
+    jdk 'JDK17'
+    maven 'Maven 3'
   }
   parameters {
     choice(name: 'BROWSER', choices: ['chrome','firefox'], description: 'Tarayıcı seç')
@@ -33,31 +33,38 @@ pipeline {
           args += "-Dheadless=${params.HEADLESS}"
 
           if (isUnix()) {
-            sh "mvn -q -U clean test ${args.join(' ')}"
+            sh "mvn -U -B clean test ${args.join(' ')}"
           } else {
-            bat "mvn -q -U clean test ${args.join(' ')}"
+            bat "mvn -U -B clean test ${args.join(' ')}"
           }
         }
       }
       post {
         always {
-          // Test raporlarını Jenkins'e yükle
-          junit '**/target/surefire-reports/*.xml'
-          junit '**/target/failsafe-reports/*.xml'
+          // Surefire + Failsafe + Cucumber (sen Runner'da xml-report kullanıyorsun)
+          junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml, **/target/failsafe-reports/*.xml, **/target/xml-report/*.xml, **/target/cucumber-reports/*.xml'
         }
       }
     }
 
     stage('Allure Report') {
-      when { expression { fileExists('target/allure-results') } }
       steps {
-        allure includeProperties: false, results: [[path: 'target/allure-results']]
+        script {
+          // workspace altında tüm allure-results klasörlerini tara
+          def hits = findFiles(glob: '**/target/allure-results')
+          if (hits && hits.size() > 0) {
+            def inputs = hits.collect { [path: it.path] }
+            allure includeProperties: false, results: inputs
+          } else {
+            echo 'Allure: allure-results bulunamadı, rapor üretilmedi.'
+          }
+        }
       }
     }
 
     stage('Archive Artifacts') {
       steps {
-        archiveArtifacts artifacts: 'target/**/*.jar, target/**/*.zip', fingerprint: true
+        archiveArtifacts artifacts: '**/target/**/*.jar, **/target/**/*.zip, logs/**/*, **/target/screenshots/**/*, **/target/*.log', fingerprint: true, onlyIfSuccessful: false
       }
     }
   }
