@@ -46,16 +46,18 @@ sifre='''"${EDEVLET_SIFRE}"'''
 EOF
               '''
             } else {
-              // Windows agent: PowerShell ile yaz
+              // Windows ajanı: tek satır PowerShell + here-string (caret ^ komut içinde yok)
               bat '''
-              powershell -NoLogo -NoProfile -Command ^
-                "$p = 'src/test/resources'; ^
-                 if (!(Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null }; ^
-                 @'
-base_url=${env:BASE_URL}
-kullanici_adi=${env:EDEVLET_TC}
-sifre=${env:EDEVLET_SIFRE}
-'@ | Out-File -FilePath src/test/resources/configuration.properties -Encoding UTF8 -Force"
+              powershell -NoLogo -NoProfile -Command "
+                $p = 'src/test/resources';
+                if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null };
+                $content = @\"
+base_url=$env:BASE_URL
+kullanici_adi=$env:EDEVLET_TC
+sifre=$env:EDEVLET_SIFRE
+\"@;
+                $content | Out-File -FilePath src/test/resources/configuration.properties -Encoding UTF8 -Force
+              "
               '''
             }
           }
