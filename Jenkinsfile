@@ -25,7 +25,9 @@ pipeline {
   stages {
 
     stage('Checkout') {
-      steps { checkout scm }
+      steps {
+        checkout scm
+      }
     }
 
     stage('Config Dosyası Oluştur') {
@@ -39,25 +41,28 @@ pipeline {
               sh '''
                 set -e
                 mkdir -p src/test/resources
-                cat > src/test/resources/configuration.properties <<'EOF'
-base_url='''"${BASE_URL}"'''
-kullanici_adi='''"${EDEVLET_TC}"'''
-sifre='''"${EDEVLET_SIFRE}"'''
+                cat > src/test/resources/configuration.properties <<EOF
+base_url=${BASE_URL}
+kullanici_adi=${EDEVLET_TC}
+sifre=${EDEVLET_SIFRE}
 EOF
               '''
             } else {
-              // Windows ajanı: tek satır PowerShell + here-string (caret ^ komut içinde yok)
-              bat '''
-              powershell -NoLogo -NoProfile -Command "
-                $p = 'src/test/resources';
-                if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null };
-                $content = @\"
+              // Windows ajanı: PowerShell pipeline adımı kullan (kaçışsız, güvenli)
+              powershell '''
+                $ErrorActionPreference = "Stop"
+
+                $res = "src/test/resources"
+                if (-not (Test-Path $res)) { New-Item -ItemType Directory -Path $res | Out-Null }
+
+                $cfg = Join-Path $res "configuration.properties"
+@"
 base_url=$env:BASE_URL
 kullanici_adi=$env:EDEVLET_TC
 sifre=$env:EDEVLET_SIFRE
-\"@;
-                $content | Out-File -FilePath src/test/resources/configuration.properties -Encoding UTF8 -Force
-              "
+"@ | Out-File -FilePath $cfg -Encoding UTF8 -Force
+
+                Write-Host "configuration.properties oluşturuldu: $cfg"
               '''
             }
           }
@@ -110,6 +115,8 @@ sifre=$env:EDEVLET_SIFRE
   }
 
   post {
-    always { cleanWs() }
+    always {
+      cleanWs()
+    }
   }
 }
