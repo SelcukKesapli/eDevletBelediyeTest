@@ -1,0 +1,89 @@
+2025-08-19 13:33:09.619 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:10.214 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:10.225 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:10.817 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:12.254 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:12.835 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:13.715 INFO  l.Log:11 - Arsa metrekare ekranina gidildi
+2025-08-19 13:33:14.243 INFO  l.Log:11 - Mahalle isimleri alfabetik mi kontrol ediliyor
+2025-08-19 13:33:14.243 INFO  l.Log:11 - Mahalle isimleri alfabetik mi kontrol edildi
+2025-08-19 13:33:14.384 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:15.001 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:15.006 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:15.591 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:16.845 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:17.455 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:17.459 INFO  l.Log:11 - Arsa metrekare ekranına gidiliyor
+2025-08-19 13:33:18.217 INFO  l.Log:11 - Arsa metrekare ekranına gidildi
+2025-08-19 13:33:18.222 INFO  l.Log:11 - Ahiboz Mahallesi araniyor
+2025-08-19 13:33:18.354 INFO  l.Log:11 - Ahiboz Mahallesi secildi
+2025-08-19 13:33:18.405 INFO  l.Log:11 - Cadde listesi alfabetik mi ve tekrar eden varmi dogrulaniyor
+2025-08-19 13:33:18.405 INFO  l.Log:11 - Cadde listesi dogrulandi
+2025-08-19 13:33:18.884 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:19.505 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:19.508 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:20.089 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:22.418 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:23.028 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:23.030 INFO  l.Log:11 - Arsa metrekare alanina gidiliyor
+2025-08-19 13:33:23.765 INFO  l.Log:11 - Arsa metrekare alanina gidildi
+2025-08-19 13:33:23.937 INFO  l.Log:11 - Yil listesi sirali mi kontrol ediliyor
+2025-08-19 13:33:23.937 INFO  l.Log:11 - Yil listesi dogrulandi
+2025-08-19 13:33:24.382 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:24.999 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:25.004 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:25.590 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:26.828 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:27.430 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:27.433 INFO  l.Log:11 - Arsa metrekare alanina gidiliyor
+2025-08-19 13:33:28.129 INFO  l.Log:11 - Arsa metrekare alanina gidildi
+2025-08-19 13:33:28.733 INFO  l.Log:11 - Sorgula butonuna tiklandi
+2025-08-19 13:33:28.733 INFO  l.Log:11 - Gerekli hata mesaji var mi kontrol ediliyor
+2025-08-19 13:33:28.759 INFO  l.Log:11 - Hata mesaji kontrol edildi
+2025-08-19 13:33:28.893 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:29.497 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:29.501 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:30.089 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:31.463 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:32.066 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:32.757 INFO  l.Log:11 - Arsa metrekare ekranina gidildi
+2025-08-19 13:33:32.759 INFO  l.Log:11 - eymir mahallesi seciliyor
+2025-08-19 13:33:32.861 INFO  l.Log:11 - Eymir mahallesi secildi
+2025-08-19 13:33:32.861 INFO  l.Log:11 - 3803. cadde araniyor
+2025-08-19 13:33:33.587 INFO  l.Log:11 - 3803. cadde secildi
+2025-08-19 13:33:33.737 INFO  l.Log:11 - 2025 yili secildi
+2025-08-19 13:33:33.737 INFO  l.Log:11 - Sorgula butonuna tiklandi
+2025-08-19 13:33:33.737 INFO  l.Log:11 - Basliklar cikiyor mu dogrulaniyor
+2025-08-19 13:33:34.585 INFO  l.Log:11 - Basliklar dogrulandi
+2025-08-19 13:33:34.731 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:35.354 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:35.357 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:35.942 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:37.135 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:37.746 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:37.748 INFO  l.Log:11 - Beyan bilgi ekrani kontrol ediliyor
+2025-08-19 13:33:38.678 INFO  l.Log:11 - Beyan bilgi ekrani kontrol edildi
+2025-08-19 13:33:39.263 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:39.892 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:39.895 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:40.472 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:41.681 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:42.318 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:42.323 INFO  l.Log:11 - Sicil bilgi ekrani kontrol ediliyor
+2025-08-19 13:33:43.655 INFO  l.Log:11 - Sicil bilgi ekrani kontrol edildi
+2025-08-19 13:33:43.781 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:44.397 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:44.401 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:44.986 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:46.227 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:46.820 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:46.822 INFO  l.Log:11 - Tahakkuk bilgi ekrani yazi kontrol ediliyor
+2025-08-19 13:33:48.301 INFO  l.Log:11 - Tahakkuk bilgi ekrani kontrol edildi
+2025-08-19 13:33:48.481 INFO  l.Log:11 - ekrana gidilir
+2025-08-19 13:33:49.102 INFO  l.Log:11 - ekran açıldı
+2025-08-19 13:33:49.106 INFO  l.Log:11 - arama çubuğu bekleniyor
+2025-08-19 13:33:49.687 INFO  l.Log:11 - Arama çubuğu açıldı ve gölbaşı aratıldı
+2025-08-19 13:33:50.941 INFO  l.Log:11 - golbasi sayfasina gidilir
+2025-08-19 13:33:51.545 INFO  l.Log:11 - tum hizmetler sekmesine gidilir
+2025-08-19 13:33:51.547 INFO  l.Log:11 - Tahsilat bilgi ekrani kontrol ediliyor
+2025-08-19 13:33:52.852 INFO  l.Log:11 - Tahsilat bilgi ekrani kontrol edildi
