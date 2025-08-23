@@ -40,6 +40,7 @@ pipeline {
                 set -e
                 mkdir -p src/test/resources
                 cat > src/test/resources/configuration.properties <<EOF
+base_url=${BASE_URL}
 kullanici_adi=${EDEVLET_TC}
 sifre=${EDEVLET_SIFRE}
 EOF
@@ -54,6 +55,7 @@ EOF
                 $cfg = Join-Path $res "configuration.properties"
 
                 $content = @"
+base_url=$env:BASE_URL
 kullanici_adi=$env:EDEVLET_TC
 sifre=$env:EDEVLET_SIFRE
 "@
@@ -76,7 +78,7 @@ sifre=$env:EDEVLET_SIFRE
           if (params.TAGS?.trim()) { args += "-Dcucumber.filter.tags=${params.TAGS}" }
           args += "-Dbrowser=${params.BROWSER}"
           args += "-Dheadless=${params.HEADLESS}"
-          args += "-DbaseUrl=${params.BASE_URL}"     // tek kaynak
+          args += "-DbaseUrl=${params.BASE_URL}"     // tek kaynak (fallback için de kullanılacak)
 
           if (isUnix()) {
             sh  "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
