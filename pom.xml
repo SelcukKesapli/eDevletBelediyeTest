@@ -16,7 +16,7 @@
 
         <!-- Versiyonlar -->
         <!-- İstersen 4.35.0+ yaparak CDP uyarısını da azaltırsın -->
-        <selenium.version>4.34.0</selenium.version>
+        <selenium.version>4.35.0</selenium.version>
         <cucumber.version>7.27.0</cucumber.version>
         <surefire.version>3.5.3</surefire.version>
     </properties>

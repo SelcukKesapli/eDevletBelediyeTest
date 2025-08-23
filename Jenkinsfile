@@ -46,6 +46,9 @@ base_url=${BASE_URL}
 kullanici_adi=${EDEVLET_TC}
 sifre=${EDEVLET_SIFRE}
 EOF
+                echo "configuration.properties oluşturuldu:"
+                cat src/test/resources/configuration.properties
+                echo "Dosya boyutu: $(stat -c%s src/test/resources/configuration.properties) bytes"
               '''
             } else {
               // Windows ajanı: PowerShell pipeline adımı kullan (kaçışsız, güvenli)
@@ -63,6 +66,9 @@ sifre=$env:EDEVLET_SIFRE
 "@ | Out-File -FilePath $cfg -Encoding UTF8 -Force
 
                 Write-Host "configuration.properties oluşturuldu: $cfg"
+                Write-Host "Dosya içeriği:"
+                Get-Content $cfg | Write-Host
+                Write-Host "Dosya boyutu: $(Get-Item $cfg).Length bytes"
               '''
             }
           }
@@ -80,9 +86,9 @@ sifre=$env:EDEVLET_SIFRE
           args += "-DbaseUrl=${params.BASE_URL}"
 
           if (isUnix()) {
-            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
+            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 -Dbrowser=${params.BROWSER} -Dheadless=${params.HEADLESS} -DbaseUrl=${params.BASE_URL} ${args.join(' ')}"
           } else {
-            bat "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
+            bat "mvn -U -B clean test -Dfile.encoding=UTF-8 -Dbrowser=${params.BROWSER} -Dheadless=${params.HEADLESS} -DbaseUrl=${params.BASE_URL} ${args.join(' ')}"
           }
         }
       }
