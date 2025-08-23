@@ -9,30 +9,31 @@ public class ConfigReader {
     private static final Properties props = new Properties();
 
     static {
-        // 1) target/test-classes içindeki (classpath) configuration.properties
+        // 1) target/test-classes (classpath)
         try (InputStream is = ConfigReader.class
                 .getClassLoader()
                 .getResourceAsStream("configuration.properties")) {
             if (is != null) {
                 props.load(is);
-                return;
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) { }
 
-        // 2) Lokal çalışırken: src/test/resources/configuration.properties
-        try (InputStream is = new FileInputStream("src/test/resources/configuration.properties")) {
-            props.load(is);
-        } catch (Exception e) {
-            System.out.println("[ConfigReader] configuration.properties bulunamadı.");
+        // 2) Lokal koşum: src/test/resources
+        if (props.isEmpty()) {
+            try (InputStream fis = new FileInputStream("src/test/resources/configuration.properties")) {
+                props.load(fis);
+            } catch (Exception e) {
+                System.out.println("[ConfigReader] configuration.properties bulunamadı.");
+            }
         }
     }
 
-    /** Varsa değeri döner; yoksa null döner. */
+    // Değer varsa döner; yoksa null
     public static String getProperty(String key) {
         return props.getProperty(key);
     }
 
-    /** Değer yoksa basit bir RuntimeException fırlatır. */
+    // Kritik değerler için: yoksa basit hata fırlat
     public static String require(String key) {
         String v = getProperty(key);
         if (v == null) {
