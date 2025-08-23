@@ -43,19 +43,25 @@ pipeline {
 kullanici_adi=${EDEVLET_TC}
 sifre=${EDEVLET_SIFRE}
 EOF
-                echo "configuration.properties oluşturuldu."
+                echo "configuration.properties oluşturuldu (Linux)."
               '''
             } else {
+              // Windows: UTF-8 WITHOUT BOM ile yaz (BOM sorununu önler)
               powershell '''
                 $ErrorActionPreference = "Stop"
                 $res = "src\\test\\resources"
                 if (-not (Test-Path $res)) { New-Item -ItemType Directory -Path $res | Out-Null }
                 $cfg = Join-Path $res "configuration.properties"
-@"
+
+                $content = @"
 kullanici_adi=$env:EDEVLET_TC
 sifre=$env:EDEVLET_SIFRE
-"@ | Out-File -FilePath $cfg -Encoding UTF8 -Force
-                Write-Host "configuration.properties oluşturuldu: $cfg (Boyut: $((Get-Item $cfg).Length) bytes)"
+"@
+
+                $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+                [System.IO.File]::WriteAllText($cfg, $content, $utf8NoBom)
+
+                Write-Host "configuration.properties oluşturuldu (Windows): $cfg (Boyut: $((Get-Item $cfg).Length) bytes)"
               '''
             }
           }
@@ -70,10 +76,10 @@ sifre=$env:EDEVLET_SIFRE
           if (params.TAGS?.trim()) { args += "-Dcucumber.filter.tags=${params.TAGS}" }
           args += "-Dbrowser=${params.BROWSER}"
           args += "-Dheadless=${params.HEADLESS}"
-          args += "-DbaseUrl=${params.BASE_URL}"   // TEK KAYNAK
+          args += "-DbaseUrl=${params.BASE_URL}"     // tek kaynak
 
           if (isUnix()) {
-            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
+            sh  "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           } else {
             bat "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           }
@@ -86,7 +92,7 @@ sifre=$env:EDEVLET_SIFRE
       steps {
         script {
           def hits = findFiles(glob: '**/target/allure-results')
-          if (hits) {
+          if (hits && hits.size() > 0) {
             def inputs = hits.collect { [path: it.path] }
             allure includeProperties: false, results: inputs
           } else {
@@ -106,7 +112,6 @@ sifre=$env:EDEVLET_SIFRE
 
   post {
     always {
-      // Test sonuçlarını her durumda yayınla (başarısızlıkta bile)
       junit testResults: 'target/surefire-reports/*.xml, target/xml-report/*.xml', allowEmptyResults: false
       cleanWs()
     }
