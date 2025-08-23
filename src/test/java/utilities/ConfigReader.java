@@ -26,14 +26,24 @@ public class ConfigReader {
                 System.out.println("[ConfigReader] configuration.properties bulunamadı.");
             }
         }
+
+        // Debug: anahtarları göster (değerleri göstermiyoruz)
+        System.out.println("[ConfigReader] Yüklenen anahtarlar: " + props.keySet());
     }
 
-    // Değer varsa döner; yoksa null
     public static String getProperty(String key) {
-        return props.getProperty(key);
+        String val = props.getProperty(key);
+
+        // Jenkins ENV fallback (özellikle bu 2 anahtar için)
+        if ((val == null || val.isBlank()) && "kullanici_adi".equals(key)) {
+            val = System.getenv("EDEVLET_TC");
+        }
+        if ((val == null || val.isBlank()) && "sifre".equals(key)) {
+            val = System.getenv("EDEVLET_SIFRE");
+        }
+        return val;
     }
 
-    // Kritik değerler için: yoksa basit hata fırlat
     public static String require(String key) {
         String v = getProperty(key);
         if (v == null) {
