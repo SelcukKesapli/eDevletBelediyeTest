@@ -15,7 +15,7 @@ pipeline {
     choice(name: 'BROWSER', choices: ['chrome','firefox'], description: 'Tarayıcı seç')
     booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Headless çalıştır')
     string(name: 'TAGS', defaultValue: '', description: 'Cucumber @tag filtresi (boş=hepsi)')
-    string(name: 'BASE_URL', defaultValue: 'https://www.turkiye.gov.tr/', description: 'Ana URL (base_url)')
+    string(name: 'BASE_URL', defaultValue: 'https://www.turkiye.gov.tr/', description: 'Ana URL')
   }
 
   environment {
@@ -25,9 +25,7 @@ pipeline {
   stages {
 
     stage('Checkout') {
-      steps {
-        checkout scm
-      }
+      steps { checkout scm }
     }
 
     stage('Config Dosyası Oluştur') {
@@ -42,33 +40,22 @@ pipeline {
                 set -e
                 mkdir -p src/test/resources
                 cat > src/test/resources/configuration.properties <<EOF
-base_url=${BASE_URL}
 kullanici_adi=${EDEVLET_TC}
 sifre=${EDEVLET_SIFRE}
 EOF
-                echo "configuration.properties oluşturuldu:"
-                cat src/test/resources/configuration.properties
-                echo "Dosya boyutu: $(stat -c%s src/test/resources/configuration.properties) bytes"
+                echo "configuration.properties oluşturuldu."
               '''
             } else {
-              // Windows ajanı: PowerShell pipeline adımı kullan (kaçışsız, güvenli)
               powershell '''
                 $ErrorActionPreference = "Stop"
-
-                $res = "src/test/resources"
+                $res = "src\\test\\resources"
                 if (-not (Test-Path $res)) { New-Item -ItemType Directory -Path $res | Out-Null }
-
                 $cfg = Join-Path $res "configuration.properties"
 @"
-base_url=$env:BASE_URL
 kullanici_adi=$env:EDEVLET_TC
 sifre=$env:EDEVLET_SIFRE
 "@ | Out-File -FilePath $cfg -Encoding UTF8 -Force
-
-                Write-Host "configuration.properties oluşturuldu: $cfg"
-                Write-Host "Dosya içeriği:"
-                Get-Content $cfg | Write-Host
-                Write-Host "Dosya boyutu: $(Get-Item $cfg).Length bytes"
+                Write-Host "configuration.properties oluşturuldu: $cfg (Boyut: $((Get-Item $cfg).Length) bytes)"
               '''
             }
           }
@@ -83,31 +70,27 @@ sifre=$env:EDEVLET_SIFRE
           if (params.TAGS?.trim()) { args += "-Dcucumber.filter.tags=${params.TAGS}" }
           args += "-Dbrowser=${params.BROWSER}"
           args += "-Dheadless=${params.HEADLESS}"
-          args += "-DbaseUrl=${params.BASE_URL}"
+          args += "-DbaseUrl=${params.BASE_URL}"   // TEK KAYNAK
 
           if (isUnix()) {
-            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 -Dbrowser=${params.BROWSER} -Dheadless=${params.HEADLESS} -DbaseUrl=${params.BASE_URL} ${args.join(' ')}"
+            sh "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           } else {
-            bat "mvn -U -B clean test -Dfile.encoding=UTF-8 -Dbrowser=${params.BROWSER} -Dheadless=${params.HEADLESS} -DbaseUrl=${params.BASE_URL} ${args.join(' ')}"
+            bat "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
           }
-        }
-      }
-      post {
-        always {
-          junit testResults: 'target/surefire-reports/*.xml, target/xml-report/*.xml', allowEmptyResults: false
         }
       }
     }
 
     stage('Allure Report') {
+      when { expression { currentBuild.currentResult == 'SUCCESS' } }
       steps {
         script {
           def hits = findFiles(glob: '**/target/allure-results')
-          if (hits && hits.size() > 0) {
+          if (hits) {
             def inputs = hits.collect { [path: it.path] }
             allure includeProperties: false, results: inputs
           } else {
-            echo 'Allure: allure-results bulunamadı, rapor üretilmedi.'
+            echo 'Allure: allure-results bulunamadı.'
           }
         }
       }
@@ -115,13 +98,16 @@ sifre=$env:EDEVLET_SIFRE
 
     stage('Archive Artifacts') {
       steps {
-        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log', fingerprint: true, onlyIfSuccessful: false
+        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log',
+                         fingerprint: true, onlyIfSuccessful: false
       }
     }
   }
 
   post {
     always {
+      // Test sonuçlarını her durumda yayınla (başarısızlıkta bile)
+      junit testResults: 'target/surefire-reports/*.xml, target/xml-report/*.xml', allowEmptyResults: false
       cleanWs()
     }
   }
