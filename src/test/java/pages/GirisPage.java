@@ -29,10 +29,11 @@ public class GirisPage {
         girisButon.click();
 
         ReasubleMethods.visibleWait(Driver.getDriver(), tcNo, 15)
-                .sendKeys(ConfigReader.getProperty("kullanici_adi"));
+                .sendKeys(ConfigReader.require("kullanici_adi"));
 
-        sifre.sendKeys(ConfigReader.getProperty("sifre"));
+        sifre.sendKeys(ConfigReader.require("sifre"));
 
         submitButon.click();
     }
+
 }
