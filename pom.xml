@@ -100,15 +100,16 @@
                     <includes>
                         <include>**/*Runner*.java</include>
                         <include>**/*Test*.java</include>
+                        <include>**/TestRunner.java</include>
                     </includes>
                     <!-- Türkçe karakterler için -->
                     <argLine>-Dfile.encoding=UTF-8</argLine>
-                    <!-- Jenkins parametrelerini Maven'a geçireceksen:
+                    <!-- Jenkins parametrelerini Maven'a geçir -->
                     <systemPropertyVariables>
-                      <browser>${browser}</browser>
-                      <headless>${headless}</headless>
+                        <browser>${browser}</browser>
+                        <headless>${headless}</headless>
+                        <baseUrl>${baseUrl}</baseUrl>
                     </systemPropertyVariables>
-                    -->
                 </configuration>
             </plugin>
         </plugins>
