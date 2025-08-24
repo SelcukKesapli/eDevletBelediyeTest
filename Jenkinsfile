@@ -4,6 +4,7 @@ pipeline {
   options {
     timestamps()
     buildDiscarder(logRotator(numToKeepStr: '20'))
+    // optional: ansiColor('xterm')
   }
 
   tools {
@@ -16,6 +17,7 @@ pipeline {
     booleanParam(name: 'HEADLESS', defaultValue: true, description: 'Headless çalıştır')
     string(name: 'TAGS', defaultValue: '', description: 'Cucumber @tag filtresi (boş=hepsi)')
     string(name: 'BASE_URL', defaultValue: 'https://www.turkiye.gov.tr/', description: 'Ana URL')
+    string(name: 'WINDOW_SIZE', defaultValue: '1920,1080', description: '★ Chrome pencere boyutu Genişlik,Yükseklik') // ★
   }
 
   environment {
@@ -78,7 +80,9 @@ sifre=$env:EDEVLET_SIFRE
           if (params.TAGS?.trim()) { args += "-Dcucumber.filter.tags=${params.TAGS}" }
           args += "-Dbrowser=${params.BROWSER}"
           args += "-Dheadless=${params.HEADLESS}"
-          args += "-DbaseUrl=${params.BASE_URL}"     // tek kaynak (fallback için de kullanılacak)
+          args += "-DbaseUrl=${params.BASE_URL}"
+          args += "-DwindowSize=${params.WINDOW_SIZE}"            // ★ yeni parametre Maven'a iletiliyor
+          args += "-Dci=true"                                     // ★ opsiyonel: kodda CI’ye özel davranış için kullanabilirsin
 
           if (isUnix()) {
             sh  "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
@@ -90,7 +94,7 @@ sifre=$env:EDEVLET_SIFRE
     }
 
     stage('Allure Report') {
-      when { expression { currentBuild.currentResult == 'SUCCESS' } }
+      // ★ Başarısız olsa bile raporu üretmeye çalış
       steps {
         script {
           def hits = findFiles(glob: '**/target/allure-results')
@@ -106,7 +110,7 @@ sifre=$env:EDEVLET_SIFRE
 
     stage('Archive Artifacts') {
       steps {
-        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log',
+        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log, **/target/ci-dump/**/*', // ★ ci-dump eklendi
                          fingerprint: true, onlyIfSuccessful: false
       }
     }
