@@ -1,10 +1,12 @@
 package hooks;
 
-import io.cucumber.java.AfterAll;
-import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
+import io.cucumber.java.*;
+import io.qameta.allure.Allure;
 import pages.GirisPage;
 import utilities.Driver;
+import utilities.ScenarioFail;
+
+import static org.junit.Assert.fail;
 
 public class Hooks {
 
@@ -31,6 +33,16 @@ public class Hooks {
     @Before
     public void anaSayfayaGit() {
         Driver.getDriver().get(resolveBaseUrl());
+    }
+
+    @After
+    public void afterScenario(Scenario sc) {
+        if (ScenarioFail.any()){
+            String m = ScenarioFail.msg();
+            Allure.addAttachment(sc.getName(),m);
+            ScenarioFail.clear();
+            fail(m);
+        }
     }
 
     @AfterAll
