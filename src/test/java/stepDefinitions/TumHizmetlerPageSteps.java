@@ -160,9 +160,9 @@ public class TumHizmetlerPageSteps {
         boolean actual   = (alfabetikMi && !tekrarVarMi);
 
         if (!alfabetikMi)
-            io.qameta.allure.Allure.step("Sıralama bozuk (detaylar eklerde).", Status.FAILED);
+            Allure.step("Sıralama bozuk ", Status.FAILED);
         if (tekrarVarMi)
-            io.qameta.allure.Allure.step("Tekrar eden öğe(ler) var (eklerde).", Status.FAILED);
+            Allure.step("Tekrar eden öğe(ler) var ", Status.FAILED);
 
         try {
             Assert.assertEquals(expected, actual);
