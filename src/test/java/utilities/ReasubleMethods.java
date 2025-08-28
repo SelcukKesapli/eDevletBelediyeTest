@@ -9,6 +9,7 @@ import java.text.Collator;
 import java.text.Normalizer;
 import java.time.Duration;
 import java.util.*;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -152,15 +153,45 @@ public class ReasubleMethods {
         }
     }
 
-    public static boolean waitClickedOnce(WebDriver driver, WebElement button, int seconds) {
-        return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(d -> {
+    public static boolean waitClickedOnce(WebDriver driver, WebElement el, int seconds) {
+        String tmpUrl;
+        try {
+            tmpUrl = driver.getCurrentUrl();
+        } catch (Exception ignore) {
+            tmpUrl = "";
+        }
+        final String urlBefore = tmpUrl;
+
+        WebDriverWait w = new WebDriverWait(driver, Duration.ofSeconds(seconds));
+
+        return w.until(d -> {
             try {
-                String one = button.getAttribute("data-one-click");
-                return "1".equals(one) || "true".equalsIgnoreCase(one)
-                        || button.getAttribute("disabled") != null
-                        || !button.isEnabled();
-            } catch (StaleElementReferenceException e) {
+                // elemana dokun: stale kontrolü tetiklensin
+                el.isEnabled();
+
+                String cls          = String.valueOf(el.getAttribute("class"));
+                String disabledAttr = el.getAttribute("disabled");
+                String ariaDisabled = el.getAttribute("aria-disabled");
+                String ariaBusy     = el.getAttribute("aria-busy");
+                String oneClick     = el.getAttribute("data-one-click");
+                String dataSubmit   = el.getAttribute("data-submit");
+
+                boolean hidden        = !el.isDisplayed();
+                boolean disabledState = disabledAttr != null || "true".equalsIgnoreCase(ariaDisabled);
+                boolean busyState     = "true".equalsIgnoreCase(ariaBusy)
+                        || (cls != null && (cls.contains("disabled") || cls.contains("loading")
+                        || cls.contains("is-loading") || cls.contains("busy") || cls.contains("processing")));
+                boolean oneClicked    = "true".equalsIgnoreCase(oneClick) || "true".equalsIgnoreCase(dataSubmit);
+
+                boolean urlChanged = false;
+                try { urlChanged = !d.getCurrentUrl().equals(urlBefore); } catch (Exception ignore) {}
+
+                return hidden || disabledState || busyState || oneClicked || urlChanged;
+            } catch (StaleElementReferenceException | NoSuchElementException e) {
+                // DOM değiştiyse: klik etkisini aldık say
                 return true;
+            } catch (Exception e) {
+                return false;
             }
         });
     }
