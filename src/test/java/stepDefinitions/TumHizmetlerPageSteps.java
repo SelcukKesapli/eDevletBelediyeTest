@@ -9,6 +9,7 @@ import io.qameta.allure.model.Status;
 import logpackages.Log;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.*;
 import utilities.ConfigReader;
@@ -458,20 +459,24 @@ public class TumHizmetlerPageSteps {
 
     @And("sorgula butonuna tiklanir")
     public void sorgulaButonunaTiklanir() {
-        WebElement btn = ReasubleMethods.visibleWait(Driver.getDriver(), arsaPage.sorgulaButon, 15);
-        btn.click();
+        WebDriver d = Driver.getDriver();
 
-        boolean expected = true;
-        boolean actual   = ReasubleMethods.waitClickedOnce(Driver.getDriver(), btn, 15);
+        // 1) Butonu bekle ve tıkla
+        ReasubleMethods.visibleWait(d, arsaPage.sorgulaButon, 15).click();
+
+        // 2) Hedef URL'i bekle ve doğrula
+        String expected = "https://www.turkiye.gov.tr/golbasi-belediyesi-arsa-rayic?asama=1";
+        ReasubleMethods.waitUrlToBe(d, expected, 20);
+        String actual = d.getCurrentUrl();
 
         try {
             Assert.assertEquals(expected, actual);
-            Log.info("Sorgula butonuna tek tik dogrulandi");
-            Allure.step("Sorgula butonuna tek tik dogrulandi", Status.PASSED);
+            Log.info("Sorgula sonrası beklenen sayfaya gidildi: " + actual);
+            Allure.step("Sorgula -> URL doğrulandı", io.qameta.allure.model.Status.PASSED);
         } catch (AssertionError | Exception ex) {
-            Log.error(ex.getMessage());
+            Log.error("URL doğrulanamadı. expected=" + expected + " actual=" + actual);
             ScenarioFail.mark(ex.getMessage());
-            Allure.step(ex.getMessage(), Status.FAILED);
+            Allure.step("URL hatası: expected=" + expected + " actual=" + actual, io.qameta.allure.model.Status.FAILED);
         }
     }
 
