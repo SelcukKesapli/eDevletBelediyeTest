@@ -4,12 +4,16 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.qameta.allure.Allure;
+import io.qameta.allure.model.Status;
 import logpackages.Log;
 import org.junit.Assert;
+import org.openqa.selenium.WebElement;
 import pages.*;
 import utilities.ConfigReader;
 import utilities.Driver;
 import utilities.ReasubleMethods;
+import utilities.ScenarioFail;
 
 import java.util.List;
 
@@ -25,21 +29,67 @@ public class TumHizmetlerPageSteps {
     public void e_devlete_ana_ekrana_gidilir() {
         Log.info("ekrana gidilir");
         Driver.getDriver().get(ConfigReader.getProperty("base_url"));
-        Log.info("ekran açıldı");
+
+        String expectedLink = ConfigReader.getProperty("base_url");
+        String actualLink = Driver.getDriver().getCurrentUrl();
+
+        try{
+            Assert.assertEquals(expectedLink, actualLink);
+            Log.info("ekran açıldı");
+        }catch(AssertionError ae){
+            Log.error("e devlet ana ekrana gidilemedi!!"+ae.getMessage());
+            ScenarioFail.mark(ae.getMessage());
+            Allure.step(ae.getMessage(),Status.FAILED);
+        }catch (Exception e){
+            Log.error("ekran ana ekrana gidilemedi!!"+e.getMessage());
+            ScenarioFail.mark(e.getMessage());
+            Allure.step(e.getMessage(),Status.FAILED);
+        }
     }
 
     @And("arama cubuguna golbasi yazilir")
     public void arama_cubuguna_golbasi_yazilir(){
         Log.info("arama çubuğu bekleniyor");
-        ReasubleMethods.visibleWait(Driver.getDriver(),mainPage.aramaKutusu,15)
-                .sendKeys("Gölbaşı");
-        Log.info("Arama çubuğu açıldı ve gölbaşı aratıldı");
+
+        try{
+            WebElement input =ReasubleMethods.visibleWait(Driver.getDriver(),mainPage.aramaKutusu,15);
+            input.clear();
+            input.sendKeys("Gölbaşı");
+
+            String expected = "Gölbaşı";
+            String actual = input.getAttribute("value");
+            Assert.assertEquals(expected, actual);
+
+            Log.info("Arama çubuğu açıldı ve gölbaşı aratıldı");
+            Allure.step("Arama çubuğu açıldı ve gölbaşı aratıldı",Status.PASSED);
+        }catch(AssertionError ae){
+            String msg = "Arama kutusu doğrulaması başarısız: " + ae.getMessage();
+            Log.error(msg);
+            ScenarioFail.mark(msg);
+            Allure.step(msg,Status.FAILED);
+        }catch (Exception e){
+            String msg = "Beklenmeyen bir hata oluştu " + e.getMessage();
+            Log.error(msg);
+            ScenarioFail.mark(msg);
+            Allure.step(msg,Status.FAILED);
+        }
     }
+
     @And("golbasi belediyesi sayfasina gidilir")
-    public void golbasi_belediyesi_sayfasina_gidilir(){
-        ReasubleMethods.visibleWait(Driver.getDriver(),mainPage.golbasiSec,15).click();
-        Log.info("golbasi sayfasina gidilir");
+    public void golbasi_belediyesi_sayfasaina_gidilir() {
+        try {
+            ReasubleMethods.visibleWait(Driver.getDriver(), mainPage.golbasiSec, 15).click();
+            String actualLink = Driver.getDriver().getCurrentUrl();
+            String expectedLink = "https://www.turkiye.gov.tr/ankara-golbasi-belediyesi";
+            Assert.assertEquals(expectedLink, actualLink);
+            Log.info("golbasi sayfasina gidildi");
+        } catch (AssertionError | Exception ex) {
+            Log.error(ex.getMessage());
+            ScenarioFail.mark(ex.getMessage());
+            Allure.step(ex.getMessage(), Status.FAILED);
+        }
     }
+
     @Then("tum hizmetler sekmesine gidilir")
     public void tum_hizmetler_sekmesine_gidilir(){
         ReasubleMethods.visibleWait(Driver.getDriver(),mainPage.tumHizmetlerButon,15).click();
