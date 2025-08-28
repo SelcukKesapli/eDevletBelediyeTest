@@ -154,10 +154,15 @@ public class TumHizmetlerPageSteps {
         Log.info("Mahalle isimleri alfabetik/tekrarsiz mi kontrol ediliyor");
 
         boolean alfabetikMi    = ReasubleMethods.alfabetikMi(mahalleList);
-        boolean tekrarEdiyorMu = ReasubleMethods.tekrarEdiyorMu(mahalleList);
+        boolean tekrarVarMi = ReasubleMethods.tekrarEdiyorMu(mahalleList);
 
         boolean expected = true;
-        boolean actual   = (alfabetikMi && !tekrarEdiyorMu);
+        boolean actual   = (alfabetikMi && !tekrarVarMi);
+
+        if (!alfabetikMi)
+            io.qameta.allure.Allure.step("Sıralama bozuk (detaylar eklerde).", Status.FAILED);
+        if (tekrarVarMi)
+            io.qameta.allure.Allure.step("Tekrar eden öğe(ler) var (eklerde).", Status.FAILED);
 
         try {
             Assert.assertEquals(expected, actual);
