@@ -130,8 +130,8 @@ public class TumHizmetlerPageSteps {
 
     List<String> mahalleList;
 
-    @Given("veriler cekilir")
-    public void verilerCekilir() {
+    @Given("mahalle verileri cekilir")
+    public void mahalleVerileriCekilir() {
         // verileri çek
         mahalleList = ReasubleMethods.dropdownToList(arsaPage.mahalleSec);
 
@@ -212,8 +212,8 @@ public class TumHizmetlerPageSteps {
 
     List<String> caddeList;
 
-    @Given("veriler cekilir")
-    public void veriler_cekilir() {
+    @Given("cadde verileri cekilir")
+    public void caddeVerileriCekilir() {
         caddeList = ReasubleMethods.dropdownToList(arsaPage.caddeSec);
 
         boolean expected = true;

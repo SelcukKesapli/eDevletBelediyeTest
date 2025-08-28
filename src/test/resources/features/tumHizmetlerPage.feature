@@ -7,13 +7,13 @@ Feature: uctan uca test
 
   Scenario: arsa metrekare mahalle adi isimler alfabetik mi ve tekrar eden var mi
     Given arsa metrekare ekranina girilir
-    And veriler cekilir
+    And mahalle verileri cekilir
     Then alfabetik mi ve tekrar eden var mi dogrulanir
 
   Scenario: arsa metrekare caddeSokak adi isimler alfabetik mi ve tekrar eden var mi
     Given arsa metrekare ekranına gidilir
     And ahiboz mahallesi secilir
-    And veriler cekilir
+    And cadde verileri cekilir
     Then alfabetik mi ve tekrar eden varmi dogrulanir
 
   Scenario: arsa metrekare yil listesi sirali mi
