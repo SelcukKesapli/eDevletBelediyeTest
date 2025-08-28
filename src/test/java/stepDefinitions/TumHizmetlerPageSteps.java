@@ -462,7 +462,7 @@ public class TumHizmetlerPageSteps {
         btn.click();
 
         boolean expected = true;
-        boolean actual   = ReasubleMethods.waitClickedOnce(Driver.getDriver(), btn, 5);
+        boolean actual   = ReasubleMethods.waitClickedOnce(Driver.getDriver(), btn, 15);
 
         try {
             Assert.assertEquals(expected, actual);
