@@ -82,7 +82,7 @@ sifre=$env:EDEVLET_SIFRE
           args += "-Dheadless=${params.HEADLESS}"
           args += "-DbaseUrl=${params.BASE_URL}"
           args += "-DwindowSize=${params.WINDOW_SIZE}"            // ★ yeni parametre Maven'a iletiliyor
-          args += "-Dci=true"                                     // ★ opsiyonel: kodda CI’ye özel davranış için kullanabilirsin
+          args += "-Dci=true"                                     // ★ opsiyonel: kodda CI’ye özel davranış için
 
           if (isUnix()) {
             sh  "mvn -U -B clean test -Dfile.encoding=UTF-8 ${args.join(' ')}"
@@ -93,31 +93,39 @@ sifre=$env:EDEVLET_SIFRE
       }
     }
 
-    stage('Allure Report') {
-      // ★ Başarısız olsa bile raporu üretmeye çalış
-      steps {
-        script {
-          def hits = findFiles(glob: '**/target/allure-results')
-          if (hits && hits.size() > 0) {
-            def inputs = hits.collect { [path: it.path] }
-            allure includeProperties: false, results: inputs
-          } else {
-            echo 'Allure: allure-results bulunamadı.'
-          }
-        }
-      }
-    }
-
     stage('Archive Artifacts') {
       steps {
-        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, logs/**/*, **/target/screenshots/**/*, **/target/*.log, **/target/ci-dump/**/*', // ★ ci-dump eklendi
+        archiveArtifacts artifacts: '**/target/surefire-reports/*.xml, **/target/xml-report/*.xml, **/target/allure-results/**, logs/**/*, **/target/screenshots/**/*, **/target/*.log, **/target/ci-dump/**/*',
                          fingerprint: true, onlyIfSuccessful: false
       }
     }
   }
 
   post {
+    // All stages bittikten sonra (başarılı/başarısız fark etmez) Allure raporunu yayınla,
+    // JUnit sonuçlarını yükle ve workspace'i temizle.
     always {
+      script {
+        // Muhtemel dizinleri topla (tek/modül çoklu projeler için)
+        def results = []
+        if (fileExists('target/allure-results')) { results << [path: 'target/allure-results'] }
+        if (fileExists('allure-results'))        { results << [path: 'allure-results'] }
+        def hits = findFiles(glob: '**/target/allure-results')
+        if (hits) { hits.each { results << [path: it.path] } }
+
+        // Tekrarsızlaştır
+        results = results.unique { it.path }
+
+        if (results && results.size() > 0) {
+          // Eğer Tools altında Allure’ü “Allure” adıyla eklediysen:
+          allure commandline: 'Allure', includeProperties: false, results: results, reportBuildPolicy: 'ALWAYS'
+          // Tek kurulum varsa 'commandline' parametresi olmadan da çalışır:
+          // allure includeProperties: false, results: results, reportBuildPolicy: 'ALWAYS'
+        } else {
+          echo 'Allure: allure-results bulunamadı.'
+        }
+      }
+
       junit testResults: 'target/surefire-reports/*.xml, target/xml-report/*.xml', allowEmptyResults: false
       cleanWs()
     }

@@ -108,6 +108,7 @@ public class TumHizmetlerPageSteps {
     public void verilerCekilir() {
         mahalleList = ReasubleMethods.dropdownToList(arsaPage.mahalleSec);
     }
+
     @Then("alfabetik mi ve tekrar eden var mi dogrulanir")
     public void alfabetik_mi_ve_tekrar_eden_var_mi_dogrulanir() {
         Log.info("Mahalle isimleri alfabetik mi kontrol ediliyor");
