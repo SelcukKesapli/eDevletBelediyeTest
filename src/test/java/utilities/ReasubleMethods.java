@@ -1,8 +1,6 @@
 package utilities;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,15 +9,6 @@ import java.time.Duration;
 import java.util.*;
 
 public class ReasubleMethods {
-
-    //DÜZ BEKLEME
-    public static void wait(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     //GÖRÜNENE KADAR BEKLEME
     public static WebElement visibleWait(WebDriver driver, WebElement element, int seconds) {
@@ -105,6 +94,29 @@ public class ReasubleMethods {
         Select select = new Select(selectElement);
         select.selectByVisibleText(visibleText.trim());
     }
+
+    public static boolean waitUrlToBe(WebDriver driver, String expectedUrl, int seconds) {
+        try {
+            return new WebDriverWait(driver, Duration.ofSeconds(seconds))
+                    .until(ExpectedConditions.urlToBe(expectedUrl));
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public static boolean waitClickedOnce(WebDriver driver, WebElement button, int seconds) {
+        return new WebDriverWait(driver, Duration.ofSeconds(seconds)).until(d -> {
+            try {
+                String one = button.getAttribute("data-one-click");
+                return "1".equals(one) || "true".equalsIgnoreCase(one)
+                        || button.getAttribute("disabled") != null
+                        || !button.isEnabled();
+            } catch (StaleElementReferenceException e) {
+                return true;
+            }
+        });
+    }
+
 
 
 }

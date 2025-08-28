@@ -6,8 +6,8 @@ Feature: uctan uca test
     Then tum hizmetler sekmesine gidilir
 
   Scenario: arsa metrekare mahalle adi isimler alfabetik mi ve tekrar eden var mi
-    Given arsa metrakare ekranına girilir
-    And veriler çekilir
+    Given arsa metrekare ekranina girilir
+    And veriler cekilir
     Then alfabetik mi ve tekrar eden var mi dogrulanir
 
   Scenario: arsa metrekare caddeSokak adi isimler alfabetik mi ve tekrar eden var mi
@@ -24,13 +24,14 @@ Feature: uctan uca test
   Scenario: hata mesajı cikiyor mu
     Given arsa metrekare alanına gidilir
     And sorgula butonuna basilir
-    Then gerekli hata mesajı cikiyor mu dogrulanir
+    Then gerekli hata mesaji cikiyor mu dogrulanir
 
   Scenario: arsa rayic basliklari cikiyor mu
-    Given arsa metrakare ekranına girilir
+    Given arsa metrakare ekranina girilir
     When eymir mahallesi secilir
     And 3803. cadde secilir
-    And 2025 yili secilir ve sorgula butonuna tiklanir
+    And 2025 yili secilir
+    And sorgula butonuna tiklanir
     Then basliklar cikiyor mu dogrulanir
 
   Scenario: herhangi bir kayit bulunamadi yazisi cikiyor mu
